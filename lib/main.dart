@@ -37,82 +37,122 @@ class _QuizPageState extends State<QuizPage> {
 
   void checkAnswer(bool user_ans) {
     bool correctAnswer = quizBrain.getQuestionAnswer()!;
-    bool end = quizBrain.isFinished();
-
     // TODO 5: ปรับแก้โค้ดโดย ถ้าคำถามหมดแล้วให้ 1)โชว์ alert โดยใช้ rflutter_alert , 2) รีเซต questionNumber ให้เป็นศูนย์ด้วยเมธอด reset, 3) เซตให้ scoreKeeper เป็นลิสต์ว่าง และ 4) เซต totalScore ให้เป็นศูนย์
     setState(() {
-      if (correctAnswer == user_ans) {
-        //เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
-        totalScore++;
-        scoreKeeper.add(Icon(
-          Icons.check,
-          color: Colors.green,
-        ));
-        if (end==false){
+      if (quizBrain.isFinished()) {
+        if (correctAnswer == user_ans) {
+          //เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
+          totalScore++;
+          scoreKeeper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          scoreKeeper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
           quizBrain.nextQuestion();
         }
-        if (end==true){
-          Alert(
-            context: context,
-            title: "Score:",
-            desc: "$totalScore",
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Next Round",
-                    style: TextStyle(color: Colors.white, fontSize:20)
-                ),
-                onPressed: () {
-                  setState(() {
-                    totalScore=0;
-                    scoreKeeper=[];
-                    quizBrain.reset();
-                    Navigator.pop(context);
-                  });
-                },
-                width: 120,
-              )
-            ],
-          ).show;
-        };
-      }
-      else {
-        scoreKeeper.add(Icon(
-          Icons.close,
-          color: Colors.red,
-        ));
-        if (end==false){
-          quizBrain.nextQuestion();
+        Alert(context: context, title: "คุณได้รับ", desc: "$totalScore คะแนน")
+            .show();
+        totalScore = 0;
+        scoreKeeper = [];
+        quizBrain.reset();
+      } else {
+        if (correctAnswer == user_ans) {
+          //เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
+          totalScore++;
+          scoreKeeper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          scoreKeeper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
         }
-        if (end==true){
-          Alert(
-            context: context,
-            title: "Score:",
-            desc: "$totalScore",
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Next Round",
-                  style: TextStyle(color: Colors.white, fontSize:20),
-                ),
-                onPressed: () {
-                  setState(() {
-                    totalScore=0;
-                    scoreKeeper=[];
-                    quizBrain.reset();
-                    Navigator.pop(context);
-                  });
-                },
-                width: 120,
-              )
-            ],
-          ).show;
-        };
         quizBrain.nextQuestion();
       }
     });
-
   }
+
+  // void checkAnswer(bool user_ans) {
+  //   bool correctAnswer = quizBrain.getQuestionAnswer()!;
+  //
+  //   // TODO 5: ปรับแก้โค้ดโดย ถ้าคำถามหมดแล้วให้ 1)โชว์ alert โดยใช้ rflutter_alert , 2) รีเซต questionNumber ให้เป็นศูนย์ด้วยเมธอด reset, 3) เซตให้ scoreKeeper เป็นลิสต์ว่าง และ 4) เซต totalScore ให้เป็นศูนย์
+  //   setState(() {
+  //     if (correctAnswer == user_ans) {
+  //       //เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
+  //       totalScore++;
+  //       scoreKeeper.add(Icon(
+  //         Icons.check,
+  //         color: Colors.green,
+  //       ));
+  //       if (quizBrain.isFinished()) {
+  //         Alert(
+  //           context: context,
+  //           title: "Score:",
+  //           desc: "$totalScore",
+  //           buttons: [
+  //             DialogButton(
+  //               child: Text(
+  //                 "Next Round",
+  //                   style: TextStyle(color: Colors.white, fontSize:20)
+  //               ),
+  //               onPressed: () {
+  //                 setState(() {
+  //                   totalScore=0;
+  //                   scoreKeeper=[];
+  //                   quizBrain.reset();
+  //                   Navigator.pop(context);
+  //                 });
+  //               },
+  //               width: 120,
+  //             )
+  //           ],
+  //         ).show;
+  //       }
+  //       else {
+  //         quizBrain.nextQuestion();
+  //       }
+  //     }
+  //     else {
+  //       scoreKeeper.add(Icon(
+  //         Icons.close,
+  //         color: Colors.red,
+  //       ));
+  //       }
+  //       if (quizBrain.isFinished()) {
+  //         Alert(
+  //           context: context,
+  //           title: "Score:",
+  //           desc: "$totalScore",
+  //           buttons: [
+  //             DialogButton(
+  //               child: Text(
+  //                 "Next Round",
+  //                 style: TextStyle(color: Colors.white, fontSize:20),
+  //               ),
+  //               onPressed: () {
+  //                 setState(() {
+  //                   totalScore=0;
+  //                   scoreKeeper=[];
+  //                   quizBrain.reset();
+  //                   Navigator.pop(context);
+  //                 });
+  //               },
+  //               width: 120,
+  //             )
+  //           ],
+  //         ).show;
+  //       }
+  //       else {
+  //         quizBrain.nextQuestion();
+  //       }
+  //     });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -182,30 +222,32 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                // TODO 2: ปรับแก้โดยการเรียกใช้ฟังก์ชัน checkAnswer
-                bool? correctAnswer = quizBrain.getQuestionAnswer();
-                if (correctAnswer == false) {
-                  setState(() {
-                    //เมื่อกดปุ่ม False เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
-                    totalScore++;
-                    scoreKeeper.add(Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ));
-
-                    quizBrain.nextQuestion();
-                  });
-                } else {
-                  setState(() {
-                    scoreKeeper.add(Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ));
-
-                    quizBrain.nextQuestion();
-                  });
-                }
+                checkAnswer(false);
               },
+
+              // TODO 2: ปรับแก้โดยการเรียกใช้ฟังก์ชัน checkAnswer
+              // bool? correctAnswer = quizBrain.getQuestionAnswer();
+              // if (correctAnswer == false) {
+              //   setState(() {
+              //     //เมื่อกดปุ่ม False เพิ่มข้อมูลเข้าไปในลิสต์ scoreKeeper โดยใช้ add method
+              //     totalScore++;
+              //     scoreKeeper.add(Icon(
+              //       Icons.check,
+              //       color: Colors.green,
+              //     ));
+              //
+              //     quizBrain.nextQuestion();
+              //   });
+              // } else {
+              //   setState(() {
+              //     scoreKeeper.add(Icon(
+              //       Icons.close,
+              //       color: Colors.red,
+              //     ));
+              //
+              //     quizBrain.nextQuestion();
+              //   });
+              // }
             ),
           ),
         ),
